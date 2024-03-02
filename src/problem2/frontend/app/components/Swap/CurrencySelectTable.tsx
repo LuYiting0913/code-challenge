@@ -7,14 +7,6 @@ import {
   TableRow,
   TableCell,
   Input,
-  Button,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
-  Chip,
-  User,
-  Pagination,
 } from "@nextui-org/react";
 
 
@@ -28,8 +20,6 @@ const CurrencySelectTable = (props : CurrencySelectTableProps) => {
   const currencies = props.currencies;
   const onSelect = props.onSelect;
   const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-  // const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
@@ -40,13 +30,6 @@ const CurrencySelectTable = (props : CurrencySelectTableProps) => {
 
   const hasSearchFilter = Boolean(filterValue);
 
-  // const headerColumns = React.useMemo(() => {
-  //   if (visibleColumns === "all") return columns;
-
-  //   return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
-  // }, [visibleColumns]);
-  // const filteredItems = currencies;
-  // const items = currencies;
   const filteredItems = React.useMemo(() => {
     let filteredCurrencies = [...currencies];
 
@@ -114,17 +97,6 @@ const CurrencySelectTable = (props : CurrencySelectTableProps) => {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">Total {currencies.length} currencies</span>
-          <label className="flex items-center text-default-400 text-small">
-            Rows per page:
-            <select
-              className="bg-transparent outline-none text-default-400 text-small"
-              onChange={onRowsPerPageChange}
-            >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="15">15</option>
-            </select>
-          </label>
         </div>
       </div>
     );
