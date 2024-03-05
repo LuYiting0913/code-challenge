@@ -4,7 +4,7 @@ interface WalletBalance {
   blockchain: string;
 }
 
-interface FormattedWalletBalance extends WalletBalance{
+interface FormattedWalletBalance extends WalletBalance {
   formatted: string;
 }
 
@@ -29,7 +29,7 @@ class Datasource {
 }
 
 interface Props extends BoxProps {
-
+  // children : string?
 }
 
 const WalletPage: React.FC<Props> = (props: Props) => {
@@ -66,22 +66,36 @@ const WalletPage: React.FC<Props> = (props: Props) => {
 
 
   const sortedBalances = useMemo(() => {
-    return balances.filter((balance: WalletBalance) => {
-        const balancePriority = getPriority(balance.blockchain);
-        return (balancePriority > -99) && (balance.amount <= 0) 
-      }).sort((leftHandSide: WalletBalance, rightHandSide: WalletBalance) => { 
-        const leftPriority = getPriority(leftHandSide.blockchain);
-        const rightPriority = getPriority(rightHandSide.blockchain);
-
-        return rightPriority - leftPriority;
+    const filteredResult = balances.filter((balance: WalletBalance) => {
+      const balancePriority = getPriority(balance.blockchain);
+      return (balancePriority != BLOCKCHAIN_PRIORITIES.Default) && (balance.amount <= 0) 
     });
+
+    const sortedResult = filteredResult.sort((leftHandSide: WalletBalance, rightHandSide: WalletBalance) => { 
+      const leftPriority = getPriority(leftHandSide.blockchain);
+      const rightPriority = getPriority(rightHandSide.blockchain);
+      return rightPriority - leftPriority;
+    });
+
+    const formattedSortedResult = formattedBalances(sortedResult);
+
+    return formattedSortedResult;
   }, [balances, prices, getPriority]); 
 
+  const formattedBalances = sortedBalances.map((balance: WalletBalance) => {
+    return {
+      ...balance,
+      formatted: balance.amount.toFixed()
+    }
+  }) 
+
   const rows = sortedBalances.map((balance: FormattedWalletBalance, index: number) => {
-    let usdValue: number | null = null;
+    let exchangeRate : number = 1;
+    let usdValue: number = 0;
 
     if (prices && balance.currency && prices[balance.currency] !== undefined) {
-      usdValue = prices[balance.currency] * balance.amount;
+      exchangeRate = prices[balance.currency];
+      usdValue = exchangeRate * balance.amount;
     } else {
       usdValue = 0; // assume this is the desired way to handle null pointer error
     }
@@ -93,8 +107,8 @@ const WalletPage: React.FC<Props> = (props: Props) => {
         usdValue={usdValue}
         formattedAmount={balance.formatted}
       />
-    )
-  })
+    );
+  });
 
   return (
     <div {...rest}>

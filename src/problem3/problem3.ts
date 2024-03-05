@@ -3,7 +3,7 @@ interface WalletBalance {
   amount: number;
 }
 // formatted wallet balance share 2 attributes with wallet balance, it should inherits from the interface
-interface FormattedWalletBalance extends WalletBalance{
+interface FormattedWalletBalance {
   currency: string;
   amount: number;
   formatted: string;
@@ -30,7 +30,7 @@ class Datasource {
 }
 
 interface Props extends BoxProps {
-
+// any additional fields here?
 }
 
 const WalletPage: React.FC<Props> = (props: Props) => {
@@ -47,7 +47,8 @@ const WalletPage: React.FC<Props> = (props: Props) => {
     });
   }, []);
 
-  const getPriority = (blockchain: any): number => { // use of magic numbers and unclear why the numbers are chosen
+  const getPriority = (blockchain: any): number => { // use of magic numbers and unclear why the numbers are chosen.
+    // also violates separation of concerns.
     switch (blockchain) {
       case 'Osmosis':
         return 100
@@ -65,10 +66,11 @@ const WalletPage: React.FC<Props> = (props: Props) => {
   }
 
   const sortedBalances = useMemo(() => {
+    // return statement too long 
     return balances.filter((balance: WalletBalance) => {
         const balancePriority = getPriority(balance.blockchain);
           if (lhsPriority > -99) { // magic number of -99 and lhs priority not defined
-              if (balance.amount <= 0) { // arrowed headed if statements
+              if (balance.amount <= 0) { // arrow-headed if statements
                 return true; // redundant logic
               }
           }
@@ -83,16 +85,18 @@ const WalletPage: React.FC<Props> = (props: Props) => {
           }
     });
   }, [balances, prices]); // missing dependency of getPriority
+  // sidenote: the sorted balance is of type balance, instead of formatted balance. need to reformat.
 
   const formattedBalances = sortedBalances.map((balance: WalletBalance) => {
     return {
       ...balance,
       formatted: balance.amount.toFixed()
     }
-  }) // unused const, remove
+  }) 
 
   const rows = sortedBalances.map((balance: FormattedWalletBalance, index: number) => {
     const usdValue = prices[balance.currency] * balance.amount; // need to handle null pionter or invalid pointer
+    // would be nice to separate the calculation.
     return (
       <WalletRow 
         className={classes.row}
@@ -105,7 +109,7 @@ const WalletPage: React.FC<Props> = (props: Props) => {
   })
 
   return (
-    <div {...rest}> // may be better to include a classname
+    <div {...rest}> 
       {rows}
     </div>
   )
