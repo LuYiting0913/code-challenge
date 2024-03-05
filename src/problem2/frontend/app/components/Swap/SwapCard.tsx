@@ -1,5 +1,5 @@
 import React from "react";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input, Button} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input, Button,Tooltip} from "@nextui-org/react";
 import Image from 'next/image';
 import SwitchPic from '../../images/SwitchPicture.png';
 
@@ -286,20 +286,23 @@ const SwapCard = () => {
 
             </div>
             <div className="flex flex-wrap col-span-2 w-full h-1/2 mt-8">
-                <Button
-                    className="w-0.5 flex justify-center m-auto p-5" 
-                    color="default"
-                    variant="solid"
-                    radius="lg"
-                    onClick={swapOriginAndTarget}
-                >
-                    <Image 
-                        className="m-2"
-                        src={SwitchPic} 
-                        alt="SwitchPicture" 
-                    />
+                <Tooltip color="default" content="Swtich" closeDelay={1000}>
+                    <Button
+                        className="w-0.5 flex justify-center m-auto p-5" 
+                        color="default"
+                        variant="solid"
+                        radius="none"
+                        onClick={swapOriginAndTarget}
+                    >
+                        <Image 
+                            className="m-2"
+                            src={SwitchPic} 
+                            alt="SwitchPicture" 
+                        />
 
-                </Button>
+                    </Button>
+                </Tooltip>
+                
             </div>
         </div>
     );
