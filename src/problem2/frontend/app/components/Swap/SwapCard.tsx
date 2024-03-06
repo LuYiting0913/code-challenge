@@ -14,14 +14,14 @@ class Datasource {
 
     getPrices = async () => {
         try {
-        const response = await fetch(this.url);
-        if (!response.ok) {
-            throw new Error('Failed to fetch');
-        }
-        const prices = await response.json();
-        return prices;
+            const response = await fetch(this.url);
+            if (!response.ok) {
+                throw new Error('Failed to fetch');
+            }
+            const prices = await response.json();
+            return prices;
         } catch (error) {
-        throw new Error('Error fetching prices: ' + error);
+           throw new Error('Error fetching prices: ' + error);
         }
     };
 }
@@ -98,7 +98,7 @@ const SwapCard = () => {
         if (! (currency in currencies)) {
             return 0;
         }
-        return currencyOwned[currency];
+        return parseFloat(currencyOwned[currency].toFixed(2));
     }
 
     const getExchangedAmount = (origin:string, originAmount:number, target:string) => {
@@ -106,7 +106,7 @@ const SwapCard = () => {
         const targetPrice = currencies[target];
         const exchangeRate = targetPrice / originPrice;
 
-        return originAmount * exchangeRate;
+        return parseFloat((originAmount * exchangeRate).toFixed(2));
     }
 
     const calculateExchangeAmount = () => {
@@ -147,15 +147,29 @@ const SwapCard = () => {
     }
 
 
-    // React.useEffect(() => {
-    //     setOriginAmount(0);
-    //     // setTargetAmount(0);
-    // }, [origin]);
+    React.useEffect(() => {
+        // setOriginAmount(0);
+        // setTargetAmount(0);
+        const originValue = getExchangedAmount(target, targetAmount, origin);
+        setOriginAmount(originValue);
+    }, [origin]);
 
     // React.useEffect(() => {
     //     // setOriginAmount(0);
-    //     setTargetAmount(0);
-    // }, [target]);
+    //     // setTargetAmount(0);
+    //     const originValue = getExchangedAmount(target, targetAmount, origin);
+    //     setOriginAmount(originValue);
+    // }, [targetAmount]);
+
+    React.useEffect(() => {
+        const targetValue = getExchangedAmount(origin, originAmount, target);
+        setTargetAmount(targetValue);
+    }, [target]);
+
+    React.useEffect(() => {
+        const targetValue = getExchangedAmount(origin, originAmount, target);
+        setTargetAmount(targetValue);
+    }, [originAmount]);
 
     React.useEffect(() => {
         const fetchPrices = async () => {
@@ -254,13 +268,13 @@ const SwapCard = () => {
             
                 </div>    
                 <div className="w-full flex gap-4 items-center mb-5">
-                    <Button 
+                    {/* <Button 
                         className="w-full flex justify-center m-auto" 
                         color="warning"
                         radius="none"
                         variant="ghost"
                         onClick={calculateExchangeAmount} 
-                    >Calculate</Button>
+                    >Calculate</Button> */}
                     {/* <Button
                         className="w-1/5 flex justify-center m-auto" 
                         color="default"
